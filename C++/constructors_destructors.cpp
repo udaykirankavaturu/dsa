@@ -30,10 +30,11 @@ int main() {
         }
   };
 
-//   Student uday;
-//   uday.setAge(10);
-//   int age = uday.getAge();
-//   cout<<"age is "<<age<<endl;
+  Student uday;
+  uday.setAge(10);
+  int age = uday.getAge();
+  cout<<"age is "<<age<<endl;
 
   Student sam(2,11);
+  cout<<"end of main"<<endl;
 }
