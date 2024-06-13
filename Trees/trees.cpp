@@ -3,224 +3,209 @@
 #include <vector>
 using namespace std;
 
-class Node{
-    public:
-        int value;
-        vector<Node*> children;
+class Node {
+public:
+    int value;
+    vector<Node*> children;
 
-        Node(int value){
-            this->value = value;
-        }
+    Node(int value) {
+        this->value = value;
+    }
 };
 
-class Tree{
-    private:
-        Node* root;
-
-        Node* search(int value){
-            if(root == nullptr){
-                cout<<"tree is empty"<<endl;
-                return nullptr;
-            }
-            return DFS(root, value);
-            // return BFS(root, value);
-        }
-
-        Node* DFS(Node* node, int value){
-            if(node == nullptr){
-                return nullptr;
-            }
-
-            if(node->value == value){
-                return node;
-            }
-
-            for(const auto& child: node->children){
-                Node* search_result = DFS(child, value);
-                if(search_result != nullptr){
-                    return search_result;
-                }
-            }
-
+class Tree {
+private:
+    Node* root;
+    
+    Node* DFS(int value, Node* node) {
+        if (node == nullptr) {
             return nullptr;
         }
 
-        Node* BFS(Node* node, int value){
-             if(node == nullptr){
-                return nullptr;
-            }
-
-            if(node->value == value){
-                return node;
-            }
-
-            queue<Node*> q;
-            q.push(node);
-
-            while(!q.empty()){
-                Node* front = q.front();
-                if(front->value == value){
-                    return front;
-                }
-                q.pop();
-
-                for(const auto& child: front->children){
-                    q.push(child);
-                }
-            }
-
-            return nullptr;
+        if (node->value == value) {
+            return node;
         }
 
-        void printDF(Node* node){
-            if(node == nullptr){
-                return;
+        for (const auto& child : node->children) {
+            Node* search_result = DFS(value, child);
+            if (search_result != nullptr) {
+                return search_result;
             }
+        }
+        return nullptr;
+    }
+    
+    Node* BFS(int value, Node* node) {
+        queue<Node*> q;
+        q.push(node);
 
-            cout<<node->value<<" ";
+        while (!q.empty()) {
+            Node* front = q.front();
+            if (front->value == value) {
+                return front;
+            }
+            q.pop();
 
-            for(const auto& child: node->children){
-                printDF(child);
+            for (const auto& child : front->children) {
+                q.push(child);
             }
         }
 
-        void printBF(Node* node){
-            if(node == nullptr){
-                return;
-            }
-
-            queue<Node*> q;
-            q.push(node);
-
-            while(!q.empty()){
-                Node* front = q.front();
-                cout<<front->value<<" ";
-                q.pop();
-
-                for(const auto& child: front->children){
-                    q.push(child);
-                }
-            }
-        }
-
-        Node* searchParent(Node* node, Node* parent, int value){
-            
-            if(node == nullptr){
-                return nullptr;
-            }
-
-            if(node->value == value){
-                return parent;
-            }
-
-            for(const auto& child: node->children){
-                Node* search_result = searchParent(child, node, value);
-                if(search_result != nullptr){
-                    return search_result;
-                }
-            }
-
-            cout<<"parent not found"<<endl;
-            return nullptr;
-
-        }
-
-    public:
-        Tree(){
-            root = nullptr;
-        }
-
-        void insert(int parent, int value){
-            if(root == nullptr){
-                Node* new_node = new Node(value);
-                root = new_node;
-                cout<<"root node added"<<endl;
-                return;
-            }
-
-            Node* parent_node = search(parent);
-            if(parent_node == nullptr){
-                cout<<"parent not found"<<endl;
-                return;
-            }
-            Node* new_node = new Node(value);
-            parent_node->children.push_back(new_node);
+        return nullptr;
+    }
+    
+    void displayDF(Node* node) {
+        if (node == nullptr) {
             return;
         }
 
-        void display(){
-            if(root == nullptr) {
-                cout<<"tree is empty"<<endl;
-                return;
-            }
+        cout << node->value << " ";
 
-            cout<<"depth first print"<<endl;
-            printDF(root);
-            cout<<endl;
-            cout<<"breadth first print"<<endl;
-            printBF(root);
-            cout<<endl;
+        for (const auto& child : node->children) {
+            displayDF(child);
+        }
+    }
+    
+    void displayBF(Node* node) {
+        queue<Node*> q;
+        q.push(node);
+
+        while (!q.empty()) {
+            Node* front = q.front();
+            if (front != nullptr) {
+                cout << front->value << " ";
+            }
+            q.pop();
+
+            for (const auto& child : front->children) {
+                q.push(child);
+            }
+        }
+    }
+    
+    Node* searchParent(int value, Node* node, Node* parent) {
+        if (node == nullptr) {
+            return nullptr;
         }
 
-        void remove(int value){
-
-            if(root == nullptr){
-                cout<<"tree is empty"<<endl;
-                return;
-            }
-
-            if(root->value == value){
-                if(!root->children.empty()){
-                    cout<<"cannot remove root with children"<<endl;
-                    return;
-                }
-
-                delete root;
-                root = nullptr;
-                return;
-            }
-
-            Node* parent = searchParent(root, nullptr, value);
-
-            if(parent == nullptr){
-                return;
-            }
-
-            Node* nodeToBeRemoved = nullptr;
-            for(const auto& child: parent->children){
-                if(child->value == value){
-                    nodeToBeRemoved = child;
-                    break;
-                }
-            }
-
-            for(const auto& child: nodeToBeRemoved->children){
-                parent->children.push_back(child);
-            }
-
-            for(auto it = parent->children.begin(); it != parent->children.end();it++){
-                if((*it)->value == value){
-                    parent->children.erase(it);
-                    break;
-                }
-            }
-
-            delete nodeToBeRemoved;
-
-            
+        if (node->value == value) {
+            return parent;
         }
+
+        for (const auto& child : node->children) {
+            Node* search_result = searchParent(value, child, node);
+            if (search_result != nullptr) {
+                return search_result;
+            }
+        }
+
+        return nullptr;
+    }
+
+public:
+    Tree() {
+        root = nullptr;
+    }
+
+    void insert(int parent, int value) {
+        if (root == nullptr) {
+            Node* new_node = new Node(value);
+            root = new_node;
+            return;
+        }
+
+        Node* parent_node = search(parent);
+        if (parent_node == nullptr) {
+            cout << "parent node not found" << endl;
+            return;
+        }
+        Node* new_node = new Node(value);
+        parent_node->children.push_back(new_node);
+    }
+    
+    Node* search(int value) {
+        if (root == nullptr) {
+            cout << "tree is empty" << endl;
+            return nullptr;
+        }
+
+        // return DFS(value, root);
+        return BFS(value, root);
+    }
+    
+    void display() {
+        cout << "depth first print" << endl;
+        displayDF(root);
+        cout << endl;
+        cout << "breadth first print" << endl;
+        displayBF(root);
+        cout << endl;
+    }
+    
+    void remove(int value) {
+        if (root == nullptr) {
+            cout << "tree is empty" << endl;
+            return;
+        }
+
+        if (root->value == value) {
+            if (!root->children.empty()) {
+                cout << "cannot remove root node with children" << endl;
+                return;
+            }
+
+            delete root;
+            root = nullptr;
+            return;
+        }
+
+        Node* parent_node = searchParent(value, root, nullptr);
+        if (parent_node == nullptr) {
+            cout << "parent node not found" << endl;
+            return;
+        }
+
+        Node* nodeToBeRemoved = nullptr;
+        for (auto it = parent_node->children.begin(); it != parent_node->children.end(); ++it) {
+            if ((*it)->value == value) {
+                nodeToBeRemoved = *it;
+                parent_node->children.erase(it);
+                break;
+            }
+        }
+
+        if (nodeToBeRemoved == nullptr) {
+            cout << "node to be removed not found" << endl;
+            return;
+        }
+
+        for (const auto& child : nodeToBeRemoved->children) {
+            parent_node->children.push_back(child);
+        }
+
+        delete nodeToBeRemoved;
+    }
 };
 
-int main(){
+int main() {
     Tree t;
-    t.insert(0,10);
-    t.insert(10,20);
-    t.insert(10,30);
-    t.insert(20,40);
-    t.insert(20,60);
-    t.insert(30,50); 
+    t.insert(0, 10);
+    t.insert(10, 20);
+    t.insert(10, 30);
+    t.insert(20, 40);
+    t.insert(20, 60);
+    t.insert(30, 50);
+    t.insert(30, 70);
     t.display();
+    // df print
+    // 10 20 40 60 30 50 70
+    // bf print
+    // 10 20 30 40 60 50 70
 
     t.remove(20);
     t.display();
+    // df 10 30 50 70 40 60
+    // bf 10 30 40 60 50 70
+
+    return 0;
 }
