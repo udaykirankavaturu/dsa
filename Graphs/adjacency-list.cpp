@@ -8,17 +8,18 @@ class Graph{
         int vertexCount;
         vector<vector<int> > list;
 
-        void DSTHelper(int vertex, vector<bool>& visited){
-            cout<<vertex<<" visited"<<endl;
+        void DFTHelper(int vertex, vector<bool>& visited){
             visited[vertex] = true;
+            cout<<"visited-->"<<vertex<<endl;
 
             for(int i=0;i<list[vertex].size();i++){
                 int v = list[vertex][i];
-                if(visited[v] == false){
-                    DSTHelper(v, visited);
+                if(!visited[v]){
+                    DFTHelper(v, visited);
                 }
-            }
-        }
+            }   
+         }
+
     public:
         Graph(){
             vertexCount = 0;
@@ -46,37 +47,40 @@ class Graph{
             cout<<endl;
         }
 
-        void BST(){
-            cout<<"Breadth First Traversal"<<endl;
+        void DFT(){
+            cout<<"depth first traversal"<<endl;
             int startVertex = 2;
-            vector<bool> visited(vertexCount,false);
-            queue<int> q;
+            vector<bool> visited(vertexCount, false);
 
-            visited[startVertex] = true;
+            DFTHelper(startVertex, visited);
+            cout<<endl;
+        }
+
+        void BFT(){
+            cout<<"breadth first traversal"<<endl;
+            int startVertex = 2;
+            vector<bool> visited(vertexCount, false);
+
+            queue<int> q;
             q.push(startVertex);
+            visited[startVertex] = true;
 
             while(!q.empty()){
-                int vertex = q.front();
-                cout<<vertex<<" visited"<<endl;
+                int front = q.front();
+                cout<<"visited-->"<<front<<endl;
                 q.pop();
 
-                for(int i=0;i<list[vertex].size();i++){
-                    int v = list[vertex][i];
-                    if(visited[v] == false){
+                for(int i=0;i<list[front].size();i++){
+                    int v = list[front][i];
+                    if(!visited[v]){
                         visited[v] = true;
                         q.push(v);
                     }
                 }
             }
-
+            cout<<endl;
         }
 
-        void DST(){
-            cout<<"Depth First Traversal"<<endl;
-            int startVertex = 0;
-            vector<bool> visited(vertexCount,false);
-            DSTHelper(startVertex, visited);
-        }
 };
 
 int main(){ 
@@ -84,13 +88,15 @@ int main(){
     g.addVertex();
     g.addVertex();
     g.addVertex();
+    g.addVertex();
     g.printGraph();
 
     g.addEdge(0,1);
     g.addEdge(0,2);
+    g.addEdge(2,3);
     g.printGraph();
 
-    g.BST();
-    g.DST();
+    g.DFT();
+    g.BFT();
   
 }
