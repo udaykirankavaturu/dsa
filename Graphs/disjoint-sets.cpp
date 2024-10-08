@@ -33,7 +33,7 @@ class DisjointSet{
                     size[rootY] += size[rootX];
                 } else {
                     parent[y] = rootX;
-                    size[rootX] += rootY;
+                    size[rootX] += size[rootY];
                 }
             }
         }
