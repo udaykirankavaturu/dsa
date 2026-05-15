@@ -103,14 +103,10 @@ class Solution {
         let heightOfLeftSubTree = 0;
         let heightOfRightSubTree = 0;
         if (node.left != null) {
-            let height = { value: 0 };
-            this.getHeightOfTree(node.left, height);
-            heightOfLeftSubTree = height.value;
+            heightOfLeftSubTree = this.getHeight(node.left);
         }
         if (node.right != null) {
-            let height = { value: 0 };
-            this.getHeightOfTree(node.right, height);
-            heightOfRightSubTree = height.value;
+            heightOfRightSubTree = this.getHeight(node.right);
         }
         // if height difference > 1, tree is not balanced, return
         const heightDifference = Math.abs(heightOfLeftSubTree - heightOfRightSubTree);
@@ -122,19 +118,15 @@ class Solution {
         this.checkIfTreeIsBalanced(node.left, checkFlag);
         this.checkIfTreeIsBalanced(node.right, checkFlag);
     }
-    getHeightOfTree(node, height) {
+    getHeight(node) {
         // base case
         if (node == null)
-            return;
-        // operation
-        height.value++;
+            return 0;
         // recursion
-        if (node.left != null) {
-            this.getHeightOfTree(node.left, height);
-        }
-        else {
-            this.getHeightOfTree(node.right, height);
-        }
+        const leftTreeHeight = this.getHeight(node.left);
+        const rightTreeHeight = this.getHeight(node.right);
+        // operation
+        return 1 + Math.max(leftTreeHeight, rightTreeHeight);
     }
 }
 const example1 = new TreeNode(3);
