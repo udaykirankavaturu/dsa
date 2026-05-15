@@ -45,6 +45,67 @@ class TreeNode {
   }
 }
 
+// FIRST ATTEMPT - works for given test cases but not for all
+// class Solution {
+//   public isBalanced(root: TreeNode | null): boolean {
+//     const checkFlag = {flag: true};
+//     this.checkIfTreeIsBalanced(root, checkFlag);
+//     return checkFlag.flag;
+//   }
+
+//   private checkIfTreeIsBalanced(node: TreeNode | null, checkFlag: {flag: boolean}){
+//     // base cases
+//     if(node == null) return;
+//     if(checkFlag.flag == false) return;
+    
+
+//     // operation
+//     let leftGreatGrandChildExists = false;
+//     let rightGreatGrandChildExists = false;
+
+//     // check if great grand children exist in left sub tree
+//     if(node.left !== null){
+//         if(node.left.left != null){
+//             if(node.left.left.left != null || node.left.left.right != null){
+//                 leftGreatGrandChildExists = true;
+//             }
+//         }
+
+//          if(node.left.right != null){
+//             if(node.left.right.left != null || node.left.right.right != null){
+//                 leftGreatGrandChildExists = true;
+//             }
+//         }
+//     }
+
+//     // check if great grand children exist in left sub tree
+//     if(node.right !== null){
+//         if(node.right.left != null){
+//             if(node.right.left.left != null || node.right.left.right != null){
+//                 leftGreatGrandChildExists = true;
+//             }
+//         }
+
+//          if(node.right.right != null){
+//             if(node.right.right.left != null || node.right.right.right != null){
+//                 leftGreatGrandChildExists = true;
+//             }
+//         }
+//     }
+
+//     // if great grand children exists on one side but not the other, tree is not balanced, return
+//     if(leftGreatGrandChildExists != rightGreatGrandChildExists){
+//         checkFlag.flag = false;
+//         return;
+//     }
+
+//     // recursion
+//     this.checkIfTreeIsBalanced(node.left, checkFlag);
+//     this.checkIfTreeIsBalanced(node.right, checkFlag);
+//   }
+// }
+
+// SECOND ATTEMPT - check heights
 class Solution {
   public isBalanced(root: TreeNode | null): boolean {
     const checkFlag = {flag: true};
@@ -59,41 +120,26 @@ class Solution {
     
 
     // operation
-    let leftGreatGrandChildExists = false;
-    let rightGreatGrandChildExists = false;
+    let heightOfLeftSubTree = 0;
+    let heightOfRightSubTree = 0;
 
-    // check if great grand children exist in left sub tree
-    if(node.left !== null){
-        if(node.left.left != null){
-            if(node.left.left.left != null || node.left.left.right != null){
-                leftGreatGrandChildExists = true;
-            }
-        }
+    if(node.left != null){
+        let height = {value: 0};
+        this.getHeightOfTree(node.left, height);
 
-         if(node.left.right != null){
-            if(node.left.right.left != null || node.left.right.right != null){
-                leftGreatGrandChildExists = true;
-            }
-        }
+        heightOfLeftSubTree = height.value;
     }
 
-    // check if great grand children exist in left sub tree
-    if(node.right !== null){
-        if(node.right.left != null){
-            if(node.right.left.left != null || node.right.left.right != null){
-                leftGreatGrandChildExists = true;
-            }
-        }
+     if(node.right != null){
+        let height = {value: 0};
+        this.getHeightOfTree(node.right, height);
 
-         if(node.right.right != null){
-            if(node.right.right.left != null || node.right.right.right != null){
-                leftGreatGrandChildExists = true;
-            }
-        }
+        heightOfRightSubTree = height.value;
     }
 
-    // if great grand children exists on one side but not the other, tree is not balanced, return
-    if(leftGreatGrandChildExists != rightGreatGrandChildExists){
+    // if height difference > 1, tree is not balanced, return
+    const heightDifference = Math.abs(heightOfLeftSubTree - heightOfRightSubTree);
+    if(heightDifference > 1){
         checkFlag.flag = false;
         return;
     }
@@ -101,6 +147,21 @@ class Solution {
     // recursion
     this.checkIfTreeIsBalanced(node.left, checkFlag);
     this.checkIfTreeIsBalanced(node.right, checkFlag);
+  }
+
+  private getHeightOfTree(node: TreeNode | null, height:{value: number}){
+    // base case
+    if(node == null) return;
+
+    // operation
+    height.value++;
+
+    // recursion
+    if(node.left != null){
+        this.getHeightOfTree(node.left, height);
+    } else {
+        this.getHeightOfTree(node.right, height);
+    }
   }
 }
 
