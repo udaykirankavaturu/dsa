@@ -92,7 +92,7 @@ class Solution {
     // check if list is all ascending
     for (let index = 1; index < inOrderItems.length; index++) {
         const item = inOrderItems[index];
-        if(item < inOrderItems[index - 1]){
+        if(item <= inOrderItems[index - 1]){
             return false;
         }
     }
