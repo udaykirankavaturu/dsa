@@ -61,10 +61,30 @@ class Solution {
         if (node == null)
             return null;
         if (node.right != null)
-            return node.right;
+            return this.getSuccessorChild(node.right);
         if (node.parent != null && node.parent.val > node.val)
-            return node.parent;
+            return this.getSuccessorParent(node.parent, node);
         return null;
+    }
+    getSuccessorChild(node) {
+        // base case
+        if (node == null)
+            return null;
+        // operation
+        if (node.left == null)
+            return node;
+        // recursion
+        return this.getSuccessorChild(node.left);
+    }
+    getSuccessorParent(node, currentNode) {
+        // base case 
+        if (node == null)
+            return null;
+        // operation
+        if (node.val > currentNode.val)
+            return node;
+        // recursion
+        return this.getSuccessorParent(node.parent, currentNode);
     }
 }
 const root1 = new TreeNode(5);

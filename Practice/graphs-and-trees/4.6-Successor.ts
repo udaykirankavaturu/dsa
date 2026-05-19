@@ -66,11 +66,33 @@ class Solution {
   public inorderSuccessor(node: TreeNode | null): TreeNode | null {
     if(node == null) return null;
 
-    if(node.right != null) return node.right;
+    if(node.right != null) return this.getSuccessorChild(node.right);
 
-    if(node.parent != null && node.parent.val > node.val) return node.parent;
+    if(node.parent != null && node.parent.val > node.val) return this.getSuccessorParent(node.parent, node);
 
     return null;
+  }
+
+  private getSuccessorChild(node: TreeNode | null): TreeNode | null {
+    // base case
+    if(node == null) return null;
+
+    // operation
+    if(node.left == null) return node;
+
+    // recursion
+    return this.getSuccessorChild(node.left);
+  }
+
+  private getSuccessorParent(node: TreeNode | null, currentNode: TreeNode): TreeNode | null {
+    // base case 
+    if(node == null) return null;
+
+    // operation
+    if(node.val > currentNode.val) return node;
+
+    // recursion
+    return this.getSuccessorParent(node.parent, currentNode);
   }
 }
 
