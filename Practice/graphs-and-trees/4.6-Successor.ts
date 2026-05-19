@@ -68,7 +68,7 @@ class Solution {
 
     if(node.right != null) return this.getSuccessorChild(node.right);
 
-    if(node.parent != null && node.parent.val > node.val) return this.getSuccessorParent(node.parent, node);
+    if(node.parent != null) return this.getSuccessorParent(node.parent, node);
 
     return null;
   }
