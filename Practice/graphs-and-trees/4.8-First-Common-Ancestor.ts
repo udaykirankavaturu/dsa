@@ -76,61 +76,30 @@ class Solution {
     // if either p or q is root, return root
     if(root.val == p.val || root.val == q.val) return root;
 
-    // find p and q in tree
-    // -1 -> not found, 1 -> left subtree, 2 -> right subtree
-    let pqLocation = {
-        p: -1,
-        q: -1
-    }
-
-    // go down left subtree and right subtree
-    this.DFS(root.left, p, q, pqLocation, true);
-    this.DFS(root.right, p, q, pqLocation, false);
-
-    // check if either p or q is not found
-    if(pqLocation.p == -1 || pqLocation.q == -1) return null;
-
-    // if both are in different subtrees return root node
-    if(pqLocation.p != pqLocation.q) return root;
-
-    // both are in same subtree, find the nearest one from root and return
-    if(pqLocation.p == 1){
-        // go left
-        return this.getNearestNode(root.left, p, q);
-    } else {
-        // go right
-        return this.getNearestNode(root.right, p, q);
-    }
+    // DFS from root
+    return this.DFS(root, p, q);
   }
 
-  private DFS(node: TreeNode | null, p: TreeNode, q: TreeNode, pqLocation : {p: number, q: number}, searchingLeft: boolean){
-    // base case
-    if(node == null) return;
-
-    // operation
-    if(node.val == p.val){
-        pqLocation.p = searchingLeft ? 1 : 2;
-    }
-
-    if(node.val == q.val){
-        pqLocation.q = searchingLeft ? 1 : 2;
-    }
-
-    // recursion
-    this.DFS(node.left, p,q,pqLocation, searchingLeft);
-    this.DFS(node.right, p,q,pqLocation, searchingLeft);
-  }
-
-  private getNearestNode(node: TreeNode | null, p: TreeNode, q: TreeNode): TreeNode | null{
+  private DFS(node: TreeNode | null, p: TreeNode, q: TreeNode): TreeNode | null{
     // base case
     if(node == null) return null;
 
-    // operation
     if(node.val == p.val) return p;
     if(node.val == q.val) return q;
 
     // recursion
-    return this.getNearestNode(node.left, p, q) ?? this.getNearestNode(node.right, p, q);
+    const leftResult = this.DFS(node.left, p,q);
+    const rightResult = this.DFS(node.right, p,q);
+
+    if(leftResult != null
+     && rightResult !=null) {
+      return node;
+    }
+
+    if(leftResult != null) return leftResult;
+    if(rightResult != null) return rightResult;
+    
+    return null;
   }
 }
 
@@ -157,3 +126,10 @@ const q2 = root.right;                 // node 1
 const solution2 = new Solution();
 const result2 = solution2.firstCommonAncestor(root, p2, q2);
 console.log("Example 2 - Expected: 3, Got:", result2?.val);
+
+const p3 = root.left.left;                  // node 6
+const q3 = root.left.right.right;          // node 4
+
+const solution3 = new Solution();
+const result3 = solution2.firstCommonAncestor(root, p3, q3);
+console.log("Example 3 - Expected: 5, Got:", result3?.val);
